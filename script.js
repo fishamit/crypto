@@ -6,18 +6,14 @@ $(() => {
   let arrCoins;
   let arrSelectedCoins = [];
   let graphInterval;
-
+  let currentState;
+  //Bonus
   const chart = () => {
+    currentState = "chart";
     $(".navBtn").removeClass("active");
     $("#btnReports").addClass("active");
     clearScreen();
-    $("#txtSearch").prop("disabled", true);
-
-    if (arrSelectedCoins.length == 0) {
-      sendError("Select at least one coin to show graph.");
-      coins();
-      return;
-    }
+    $("#txtSearch").hide();
     $(".row").append(
       `<div id="chartContainer" style="width:100%; height:300px;"></div>`
     );
@@ -54,12 +50,12 @@ $(() => {
     });
 
     function addDataPoint() {
+      console.log("aaa");
       $.get(
         `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${strSymbols}&tsyms=USD`,
         (obj) => {
           if (obj.Response == "Error") {
             sendError("Live information about your selection does not exist.");
-            coins();
             return;
           }
           for (coin of chartCoins) {
@@ -83,12 +79,13 @@ $(() => {
 
   //Handle coins state
   const coins = () => {
+    currentState = "coins";
     $(".navBtn").removeClass("active");
     $("#btnCoins").addClass("active");
     //init
     localStorage.clear();
     clearInterval(graphInterval);
-    $("#txtSearch").prop("disabled", false);
+    $("#txtSearch").show();
     $(".myModal").show();
     arrCoins = [];
     // arrSelectedCoins = [];
@@ -283,11 +280,12 @@ $(() => {
   };
 
   const about = () => {
+    currentState = "about";
     clearInterval(graphInterval);
     $(".navBtn").removeClass("active");
     $("#btnAbout").addClass("active");
     clearScreen();
-    $("#txtSearch").prop("disabled", true);
+    $("#txtSearch").hide();
     $(".row").append(`
         <div class="col-xl-6 center">
         <div class="jumbotron">
@@ -325,11 +323,16 @@ $(() => {
   });
 
   $("#btnReports").on("click", () => {
+    if (arrSelectedCoins.length == 0) {
+      sendError("Select at least one coin to show graph.");
+      return;
+    }
     chart();
   });
 
   $("#btnModalErrorClose").on("click", () => {
     $(".modalError").hide();
+    if (currentState == "chart") coins();
   });
   coins();
 });

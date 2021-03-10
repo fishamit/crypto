@@ -37,7 +37,6 @@ $(() => {
     }
 
     strSymbols = strSymbols.slice(0, -1);
-    console.log(strSymbols);
 
     let x = 0;
 
@@ -72,7 +71,6 @@ $(() => {
             }
           }
           x += 2;
-          console.log(obj);
 
           chart.render();
           graphInterval = setTimeout(addDataPoint, 2000);
@@ -173,7 +171,8 @@ $(() => {
                 .on("click", function () {
                   selectionId = $(this).attr("id");
                 });
-              $(".form-check-input swc").first().prop("checked", true);
+              $(".form-check-input.swc").first().prop("checked", true);
+              selectionId = $(".form-check-input, .swc").first().attr("id");
               const label = $("<label></label>")
                 .attr({
                   class: "form-check-label",
@@ -187,7 +186,7 @@ $(() => {
             }
 
             const btnCancel = $(`<button type="button"></button>`)
-              .addClass("btn btn-primary")
+              .addClass("btn btn-secondary")
               .text("Cancel")
               .on("click", () => {
                 cleanModalSwitch();
@@ -218,7 +217,6 @@ $(() => {
         } else {
           unselectCoin(id);
         }
-        console.log(arrSelectedCoins);
       });
     for (coin of arrSelectedCoins) {
       if (coin.id == id) {
@@ -296,7 +294,7 @@ $(() => {
         <h1 class="display-4">About</h1>
         <p class="lead">My name is Amit and this is my second project for JohnBryce. I had a lot of fun building this web app, even though I feel like the code can be cleaner.
         I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
-        <hr><b>The bonus question</b> does not work 100% - the API won't recognize some coin symbols. </p>
+        <hr><b>Regarding the bonus question,</b> cryptocompare.com's API doesn't recognize all coin symbols.</p>
         </div>
         </div>
         <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>`);
@@ -308,17 +306,13 @@ $(() => {
   };
 
   $("#txtSearch").on("input", function () {
-    console.log($(this).val());
     if ($(this).val() == "") {
-      console.log("heya");
       drawCoins(arrCoins);
     } else {
       const arrSearch = arrCoins.filter((element) => {
-        console.log($(this).val());
-        console.log(element.symbol);
         return element.symbol.startsWith($(this).val());
       });
-      console.log(arrSearch);
+
       drawCoins(arrSearch);
     }
   });

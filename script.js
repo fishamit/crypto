@@ -263,12 +263,13 @@ $(() => {
                </ul></div>
               </div>
             `);
+            $(this).next().slideToggle();
           });
         } else {
           if ($(this).text() == "More info") $(this).text("Less info");
           else $(this).text("More info");
+          $(this).next().slideToggle();
         }
-        $(this).next().slideToggle();
       });
 
     const divMoreInfo = $("<div></div>").addClass("moreInfo hidden");

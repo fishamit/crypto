@@ -2,6 +2,7 @@
 
 $(() => {
   $(".modalSwitch").hide();
+  $(".modalError").hide();
   let arrCoins;
   let arrSelectedCoins = [];
   let graphInterval;
@@ -13,7 +14,7 @@ $(() => {
     $("#txtSearch").prop("disabled", true);
 
     if (arrSelectedCoins.length == 0) {
-      alert("Select at least one coin to show graph.");
+      sendError("Select at least one coin to show graph.");
       coins();
       return;
     }
@@ -58,7 +59,7 @@ $(() => {
         `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${strSymbols}&tsyms=USD`,
         (obj) => {
           if (obj.Response == "Error") {
-            alert("Information about your selection does not exist.");
+            sendError("Live information about your selection does not exist.");
             coins();
             return;
           }
@@ -301,6 +302,11 @@ $(() => {
         <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>`);
   };
 
+  const sendError = (strError) => {
+    $("#modalErrorContent").text(strError);
+    $(".modalError").show();
+  };
+
   $("#txtSearch").on("input", function () {
     console.log($(this).val());
     if ($(this).val() == "") {
@@ -328,5 +334,8 @@ $(() => {
     chart();
   });
 
+  $("#btnModalErrorClose").on("click", () => {
+    $(".modalError").hide();
+  });
   coins();
 });

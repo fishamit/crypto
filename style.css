@@ -23,7 +23,8 @@ p {
 }
 
 .myModal,
-.modalSwitch {
+.modalSwitch,
+.modalError {
   background-color: rgba(0, 0, 0, 0.514);
   position: fixed;
   height: 100vh;

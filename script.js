@@ -1,4 +1,4 @@
-// btnAbout
+//Project 2 - jQuery - Amit Fisher
 
 $(() => {
   $(".modalSwitch").hide();
@@ -7,7 +7,8 @@ $(() => {
   let arrSelectedCoins = [];
   let graphInterval;
   let currentState;
-  //Bonus
+
+  //Bonus question - graph
   const chart = () => {
     currentState = "chart";
     $(".navBtn").removeClass("active");
@@ -18,8 +19,8 @@ $(() => {
       `<div id="chartContainer" style="width:100%; height:300px;"></div>`
     );
 
+    //create array of coins for rendering on the graph
     const chartCoins = [];
-    const data = [];
     let strSymbols = "";
     for (coin of arrSelectedCoins) {
       chartCoins.push({
@@ -28,12 +29,13 @@ $(() => {
         name: coin.symbol,
         dataPoints: [],
       });
-      data.push(coin.dataPoints);
+      //API string
       strSymbols += coin.symbol + ",";
     }
 
     strSymbols = strSymbols.slice(0, -1);
 
+    //x-axis(seconds)
     let x = 0;
 
     const chart = new CanvasJS.Chart("chartContainer", {
@@ -50,10 +52,9 @@ $(() => {
     });
 
     function addDataPoint() {
-      console.log("aaa");
       $.get(
         `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${strSymbols}&tsyms=USD`,
-        (obj) => {
+        obj => {
           if (obj.Response == "Error") {
             sendError("Live information about your selection does not exist.");
             return;
@@ -67,7 +68,6 @@ $(() => {
             }
           }
           x += 2;
-
           chart.render();
           graphInterval = setTimeout(addDataPoint, 2000);
         }
@@ -77,20 +77,20 @@ $(() => {
     addDataPoint();
   };
 
-  //Handle coins state
+  //
   const coins = () => {
     currentState = "coins";
     $(".navBtn").removeClass("active");
     $("#btnCoins").addClass("active");
-    //init
     localStorage.clear();
     clearInterval(graphInterval);
     $("#txtSearch").show();
     $(".myModal").show();
     arrCoins = [];
+    // Uncomment this and change @ line 7 to make selected coins NOT carry over between states.
     // arrSelectedCoins = [];
 
-    $.get("https://api.coingecko.com/api/v3/coins/list", (obj) => {
+    $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
       for (let i = 2000; i < 2050; i++) {
         arrCoins.push({
           id: obj[i].id,
@@ -107,7 +107,7 @@ $(() => {
     $(".row").empty();
   };
 
-  const drawCoins = (array) => {
+  const drawCoins = array => {
     clearScreen();
     for (coin of array) {
       const { id, name, symbol } = coin;
@@ -123,12 +123,12 @@ $(() => {
     $("body").removeClass("noScroll");
   };
 
-  const selectCoin = (coin) => {
+  const selectCoin = coin => {
     arrSelectedCoins.push(coin);
   };
 
-  const unselectCoin = (id) => {
-    arrSelectedCoins = arrSelectedCoins.filter((element) => element.id != id);
+  const unselectCoin = id => {
+    arrSelectedCoins = arrSelectedCoins.filter(element => element.id != id);
   };
 
   //Create new card
@@ -140,15 +140,16 @@ $(() => {
     const divSwitch = $("<div></div>").addClass(
       "form-check form-switch topRight"
     );
-    //Switch
+    //Toggle switch
     const switchInput = $("<input></input>")
       .prop({
         type: "checkbox",
         id: "flexSwitchCheckDefault",
       })
       .addClass("form-check-input")
-      //Switch event handler
+      //Toggle switch event handler
       .on("click", function () {
+        //Handle selection array
         let selectionId;
         if ($(this).prop("checked")) {
           if (arrSelectedCoins.length == 5) {
@@ -238,7 +239,7 @@ $(() => {
           $(this).html(
             `<div class="spinner-border" style="width:1rem; height: 1rem;" role="status"></div>`
           );
-          $.get(`https://api.coingecko.com/api/v3/coins/${id}`, (obj) => {
+          $.get(`https://api.coingecko.com/api/v3/coins/${id}`, obj => {
             localStorage.setItem(id, JSON.stringify({ name, symbol }));
 
             //Handle deletion from localStorage after 120 seconds
@@ -298,8 +299,9 @@ $(() => {
         <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>`);
   };
 
-  const sendError = (strError) => {
+  const sendError = strError => {
     $("#modalErrorContent").text(strError);
+    $("body").addClass("noScroll");
     $(".modalError").show();
   };
 
@@ -307,7 +309,7 @@ $(() => {
     if ($(this).val() == "") {
       drawCoins(arrCoins);
     } else {
-      const arrSearch = arrCoins.filter((element) => {
+      const arrSearch = arrCoins.filter(element => {
         return element.symbol.startsWith($(this).val());
       });
 
@@ -332,7 +334,8 @@ $(() => {
 
   $("#btnModalErrorClose").on("click", () => {
     $(".modalError").hide();
-    if (currentState == "chart") coins();
+    $("body").removeClass("noScroll");
+    if (currentState != "coins") coins();
   });
   coins();
 });

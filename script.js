@@ -292,7 +292,7 @@ $(() => {
         <div class="col-xl-6 center">
         <div class="jumbotron">
         <h1 class="display-4">About</h1>
-        <p class="lead">My name is Amit and this is my second project for JohnBryce. I had a lot of fun building this web app, even though I feel like the code can be cleaner.
+        <p class="lead">My name is Amit and this is my second project for the John Bryce fullstack web developer course. I had a lot of fun building this web app!
         I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
         <hr><b>Regarding the bonus question,</b> cryptocompare.com's API doesn't recognize all coin symbols.</p>
         </div>

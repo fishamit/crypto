@@ -291,19 +291,14 @@ $(() => {
     $("#txtSearch").prop("disabled", true);
     $(".row").append(`
         <div class="col-xl-6 center">
-    <div class="jumbotron">
-  <h1 class="display-4">About</h1>
-  <p class="lead">My name is Amit and this is my second project for JohnBryce. I had a lot of fun building this web app, even though I feel like the code can be cleaner.
-  I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
-  <hr> <b>The bonus question</b> does not work 100% - the API won't recognize some coin symbols. </p>
-
-</div>
-    
-    </div>
-    <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>
-
-
-    `);
+        <div class="jumbotron">
+        <h1 class="display-4">About</h1>
+        <p class="lead">My name is Amit and this is my second project for JohnBryce. I had a lot of fun building this web app, even though I feel like the code can be cleaner.
+        I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
+        <hr><b>The bonus question</b> does not work 100% - the API won't recognize some coin symbols. </p>
+        </div>
+        </div>
+        <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>`);
   };
 
   $("#txtSearch").on("input", function () {

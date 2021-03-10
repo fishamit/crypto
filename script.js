@@ -95,7 +95,7 @@ $(() => {
     // arrSelectedCoins = [];
 
     $.get("https://api.coingecko.com/api/v3/coins/list", (obj) => {
-      for (let i = 2000; i < 2020; i++) {
+      for (let i = 2000; i < 2050; i++) {
         arrCoins.push({
           id: obj[i].id,
           name: obj[i].name,

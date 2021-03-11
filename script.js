@@ -16,7 +16,7 @@ $(() => {
     clearScreen();
     $("#txtSearch").hide();
     $(".row").append(
-      `<div id="chartContainer" style="width:100%; height:300px;"></div>`
+      `<div class="center"><div id="chartContainer" style="width:90%; height:500px;"></div></div>`
     );
 
     //create array of coins for rendering on the graph

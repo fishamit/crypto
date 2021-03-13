@@ -4,11 +4,13 @@ $(() => {
   $(".modalSwitch").hide();
   $(".modalError").hide();
   let arrCoins;
-  let arrSelectedCoins = [];
+  let arrSelectedCoins;
   let graphInterval;
   let currentState;
 
-  //Bonus question - graph
+  /*
+  Bonus question - graph
+  */
   const chart = () => {
     currentState = "chart";
     $(".navBtn").removeClass("active");
@@ -77,7 +79,9 @@ $(() => {
     addDataPoint();
   };
 
-  //
+  /*
+  Handle the coins page
+  */
   const coins = () => {
     currentState = "coins";
     $(".navBtn").removeClass("active");
@@ -87,11 +91,10 @@ $(() => {
     $("#txtSearch").show();
     $(".myModal").show();
     arrCoins = [];
-    // Uncomment this and change @ line 7 to make selected coins NOT carry over between states.
-    // arrSelectedCoins = [];
+    arrSelectedCoins = [];
 
     $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
-      for (let i = 2000; i < 2050; i++) {
+      for (let i = 0; i < 20; i++) {
         arrCoins.push({
           id: obj[i].id,
           name: obj[i].name,
@@ -118,7 +121,7 @@ $(() => {
 
   const cleanModalSwitch = () => {
     $(".selectedCoinsContainer").empty();
-    $(".modal-footer").empty();
+    $(".modal-footer.footerswitch").empty();
     $(".modalSwitch").hide();
     $("body").removeClass("noScroll");
   };
@@ -131,7 +134,9 @@ $(() => {
     arrSelectedCoins = arrSelectedCoins.filter(element => element.id != id);
   };
 
-  //Create new card
+  /*
+  Handle creation of new coin card element
+  */
   const createCard = (id, name, symbol) => {
     const divCardContainer = $("<div></div>")
       .addClass("cardContainer mb-3 col-xxl-3 col-xl-4 col-lg-4 center")
@@ -140,16 +145,14 @@ $(() => {
     const divSwitch = $("<div></div>").addClass(
       "form-check form-switch topRight"
     );
-    //Toggle switch
+    //Handle switch toggle behavior
     const switchInput = $("<input></input>")
       .prop({
         type: "checkbox",
         id: "flexSwitchCheckDefault",
       })
       .addClass("form-check-input")
-      //Toggle switch event handler
       .on("click", function () {
-        //Handle selection array
         let selectionId;
         if ($(this).prop("checked")) {
           if (arrSelectedCoins.length == 5) {
@@ -158,6 +161,7 @@ $(() => {
             $("body").addClass("noScroll");
             for (coin of arrSelectedCoins) {
               const divFormCheck = $("<div></div>").addClass("form-check");
+              //Checkbox for selecting coin to replace
               const input = $("<input></input>")
                 .attr({
                   class: "form-check-input swc",
@@ -208,7 +212,7 @@ $(() => {
                 selectCoin({ id, name, symbol });
               });
 
-            $(".modal-footer").append(btnCancel, btnReplace);
+            $(".modal-footer.footerswitch").append(btnCancel, btnReplace);
           } else {
             selectCoin({ id, name, symbol });
           }
@@ -229,6 +233,7 @@ $(() => {
       .attr("id", "btnContainer")
       .addClass("btnContainer");
 
+    //Handle more info button
     const btnMoreInfo = $("<button></button>")
       .attr("id", "btnMoreInfo")
       .addClass("btn btn-primary")
@@ -270,10 +275,8 @@ $(() => {
       });
 
     const divMoreInfo = $("<div></div>").addClass("moreInfo hidden");
-
     divBtnContainer.append(btnMoreInfo, divMoreInfo);
     divCardBody.append(cardTitle, cardText, divBtnContainer);
-
     divSwitch.append(switchInput);
     divCard.append(divSwitch, divCardBody);
     divCardContainer.append(divCard);
@@ -293,7 +296,6 @@ $(() => {
         <h1 class="display-4">About</h1>
         <p class="lead">My name is Amit and this is my second project for the John Bryce fullstack web developer course. I had a lot of fun building this web app!
         I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
-        <hr><b>Regarding the bonus question,</b> cryptocompare.com's API doesn't recognize all coin symbols.</p>
         </div>
         </div>
         <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>`);

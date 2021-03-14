@@ -155,6 +155,7 @@ $(() => {
       .on("click", function () {
         let selectionId;
         if ($(this).prop("checked")) {
+          //Handle switch replacement modal form
           if (arrSelectedCoins.length == 5) {
             let tmpStr = "";
             $(".modalSwitch").show();
@@ -186,7 +187,7 @@ $(() => {
               divFormCheck.append(input, label);
               $(".selectedCoinsContainer").append(divFormCheck);
             }
-
+            //Cancel button
             const btnCancel = $(`<button type="button"></button>`)
               .addClass("btn btn-secondary")
               .text("Cancel")
@@ -194,6 +195,7 @@ $(() => {
                 cleanModalSwitch();
                 $(this).prop("checked", false);
               });
+            //Replace button
             const btnReplace = $(`<button type="button"></button>`)
               .addClass("btn btn-primary")
               .text("Replace")
@@ -283,6 +285,9 @@ $(() => {
     return divCardContainer;
   };
 
+  /*
+  About page
+  */
   const about = () => {
     currentState = "about";
     clearInterval(graphInterval);

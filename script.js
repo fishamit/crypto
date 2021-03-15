@@ -1,10 +1,9 @@
 //Project 2 - jQuery - Amit Fisher
 
 $(() => {
-  $(".modalSwitch").hide();
-  $(".modalError").hide();
-  let arrCoins;
-  let arrSelectedCoins;
+  //Global variables
+  let arrCoins = [];
+  let arrSelectedCoins = [];
   let graphInterval;
   let currentState;
 
@@ -24,7 +23,7 @@ $(() => {
     //create array of coins for rendering on the graph
     const chartCoins = [];
     let strSymbols = "";
-    for (coin of arrSelectedCoins) {
+    for (const coin of arrSelectedCoins) {
       chartCoins.push({
         showInLegend: true,
         type: "line",
@@ -61,7 +60,7 @@ $(() => {
             sendError("Live information about your selection does not exist.");
             return;
           }
-          for (coin of chartCoins) {
+          for (const coin of chartCoins) {
             if (obj[coin.name.toUpperCase()]) {
               coin.dataPoints.push({
                 x: x,
@@ -69,14 +68,29 @@ $(() => {
               });
             }
           }
+          $(".myModal").hide();
           x += 2;
           chart.render();
           graphInterval = setTimeout(addDataPoint, 2000);
         }
       );
     }
-
     addDataPoint();
+  };
+
+  //Load coins from api into coins array and call the coins function after.
+  const loadCoins = () => {
+    $(".myModal").show();
+    $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
+      for (let i = 0; i < 20; i++) {
+        arrCoins.push({
+          id: obj[i].id,
+          name: obj[i].name,
+          symbol: obj[i].symbol,
+        });
+      }
+      coins();
+    });
   };
 
   /*
@@ -86,24 +100,10 @@ $(() => {
     currentState = "coins";
     $(".navBtn").removeClass("active");
     $("#btnCoins").addClass("active");
-    localStorage.clear();
     clearInterval(graphInterval);
     $("#txtSearch").show();
-    $(".myModal").show();
-    arrCoins = [];
-    arrSelectedCoins = [];
-
-    $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
-      for (let i = 0; i < 20; i++) {
-        arrCoins.push({
-          id: obj[i].id,
-          name: obj[i].name,
-          symbol: obj[i].symbol,
-        });
-      }
-      drawCoins(arrCoins);
-      $(".myModal").hide();
-    });
+    $(".myModal").hide();
+    drawCoins(arrCoins);
   };
 
   const clearScreen = () => {
@@ -112,7 +112,7 @@ $(() => {
 
   const drawCoins = array => {
     clearScreen();
-    for (coin of array) {
+    for (const coin of array) {
       const { id, name, symbol } = coin;
       const newCard = createCard(id, name, symbol);
       $(".row").append(newCard);
@@ -160,7 +160,7 @@ $(() => {
             let tmpStr = "";
             $(".modalSwitch").show();
             $("body").addClass("noScroll");
-            for (coin of arrSelectedCoins) {
+            for (const coin of arrSelectedCoins) {
               const divFormCheck = $("<div></div>").addClass("form-check");
               //Checkbox for selecting coin to replace
               const input = $("<input></input>")
@@ -205,7 +205,7 @@ $(() => {
                 $(`#${selectionId}`).find("input").prop("checked", false);
                 let oldSymbol;
 
-                for (coin of arrCoins) {
+                for (const coin of arrCoins) {
                   if (coin.id == selectionId) {
                     unselectCoin(selectionId);
                   }
@@ -222,7 +222,7 @@ $(() => {
           unselectCoin(id);
         }
       });
-    for (coin of arrSelectedCoins) {
+    for (const coin of arrSelectedCoins) {
       if (coin.id == id) {
         switchInput.prop("checked", true);
       }
@@ -259,7 +259,7 @@ $(() => {
             $(this).text("Less info");
             $(this).next().html(`
               <div class="infoContainer">
-              <div class="center"> <img class="coinIcon" src="${obj.image.small}"></img> </div>
+              <div class="center"> <img class="coinIcon" src="${obj.image.small}" alt="coin image"></img> </div>
                <div class="center"><ul>
                <li>USD: ${obj.market_data.current_price.usd}$</li>
                <li>EUR: ${obj.market_data.current_price.eur}€</li>
@@ -303,7 +303,7 @@ $(() => {
         I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
         </div>
         </div>
-        <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png"></img></div>`);
+        <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png" alt="Sunny"></img></div>`);
   };
 
   const sendError = strError => {
@@ -312,6 +312,7 @@ $(() => {
     $(".modalError").show();
   };
 
+  //Event listeners:
   $("#txtSearch").on("input", function () {
     if ($(this).val() == "") {
       drawCoins(arrCoins);
@@ -319,7 +320,6 @@ $(() => {
       const arrSearch = arrCoins.filter(element => {
         return element.symbol.startsWith($(this).val());
       });
-
       drawCoins(arrSearch);
     }
   });
@@ -336,6 +336,7 @@ $(() => {
       sendError("Select at least one coin to show graph.");
       return;
     }
+    $(".myModal").show();
     chart();
   });
 
@@ -344,5 +345,10 @@ $(() => {
     $("body").removeClass("noScroll");
     if (currentState != "coins") coins();
   });
-  coins();
+
+  //Initiate the website
+  $(".modalSwitch").hide();
+  $(".modalError").hide();
+  localStorage.clear();
+  loadCoins();
 });

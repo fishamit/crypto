@@ -82,7 +82,8 @@ $(() => {
   const loadCoins = () => {
     $(".myModal").show();
     $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
-      for (let i = 0; i < 20; i++) {
+      for (let i = 1; i < 40; i++) {
+        //Starting at 1 because sometimes the first element has no img.
         arrCoins.push({
           id: obj[i].id,
           name: obj[i].name,
@@ -318,7 +319,9 @@ $(() => {
       drawCoins(arrCoins);
     } else {
       const arrSearch = arrCoins.filter(element => {
-        return element.symbol.startsWith($(this).val());
+        return element.symbol
+          .toLowerCase()
+          .startsWith($(this).val().toLowerCase());
       });
       drawCoins(arrSearch);
     }

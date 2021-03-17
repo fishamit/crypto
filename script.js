@@ -338,7 +338,12 @@ $(() => {
         <div class="jumbotron">
         <h1 class="display-4">About</h1>
         <p class="lead">My name is Amit and this is my second project for the John Bryce fullstack web developer course. I had a lot of fun building this web app!
-        I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
+        I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries. Two small notes:
+        </p>
+        <ol>
+        <li>Regarding the bonus question, some coins are not recognized by the API. If you select a coin (using the toggle switch) which has no live information, it will be deselected.</li>
+        <li>The search function has no button - the coins are filtered whenever there is a change in the search input.</li>
+        </ol>
         </div>
         </div>
         <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png" alt="Sunny"></img></div>`);

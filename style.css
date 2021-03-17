@@ -45,6 +45,10 @@ p {
   border-radius: 50%;
   margin-bottom: 50px;
 }
+.spinnerSwitch {
+  position: relative;
+  right: 15px;
+}
 
 .logo {
   background-image: url("img/bg.jpg");

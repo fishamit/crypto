@@ -131,14 +131,23 @@ $(() => {
 
   /*Checks if live information about specific coin exists. if it does, it will be selected*/
   const selectCoin = coin => {
+    $(`#${coin.id}`).find("input").hide();
+    $(`#${coin.id}`).find(".topRight").append(`
+    <div id= "${coin.id}-spinner"class="spinner-border text-primary spinnerSwitch" style="width:1rem; height: 1rem;" role="status"></div>
+    `);
     $.get(
       `https://min-api.cryptocompare.com/data/price?fsym=${coin.symbol}&tsyms=USD`,
       res => {
         if (res.Response == "Error") {
           sendError(`No live information for ${coin.symbol}, deselecting.`);
+          $(`#${coin.id}-spinner`).remove();
           $(`#${coin.id}`).find("input").prop("checked", false);
+          $(`#${coin.id}`).find("input").show();
         } else {
+          $(`#${coin.id}-spinner`).remove();
           arrSelectedCoins.push(coin);
+          $(`#${coin.id}`).find("input").prop("checked", true);
+          $(`#${coin.id}`).find("input").show();
         }
       }
     );

@@ -14,6 +14,7 @@ $(() => {
     currentState = "chart";
     $(".navBtn").removeClass("active");
     $("#btnReports").addClass("active");
+
     clearScreen();
     $("#txtSearch").hide();
     $(".row").append(
@@ -21,6 +22,7 @@ $(() => {
     );
 
     //create array of coins for rendering on the graph
+    let firstPass = true;
     const chartCoins = [];
     let strSymbols = "";
     for (const coin of arrSelectedCoins) {
@@ -56,10 +58,6 @@ $(() => {
       $.get(
         `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${strSymbols}&tsyms=USD`,
         obj => {
-          if (obj.Response == "Error") {
-            sendError("Live information about your selection does not exist.");
-            return;
-          }
           for (const coin of chartCoins) {
             if (obj[coin.name.toUpperCase()]) {
               coin.dataPoints.push({
@@ -68,9 +66,13 @@ $(() => {
               });
             }
           }
-          $(".myModal").hide();
+          if (firstPass) {
+            $(".myModal").hide();
+            firstPass = false;
+          }
           x += 2;
           chart.render();
+
           graphInterval = setTimeout(addDataPoint, 2000);
         }
       );
@@ -82,7 +84,7 @@ $(() => {
   const loadCoins = () => {
     $(".myModal").show();
     $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
-      for (let i = 1; i < 40; i++) {
+      for (let i = 1; i < 50; i++) {
         //Starting at 1 because sometimes the first element has no img.
         arrCoins.push({
           id: obj[i].id,
@@ -127,8 +129,19 @@ $(() => {
     $("body").removeClass("noScroll");
   };
 
+  /*Checks if live information about specific coin exists. if it does, it will be selected*/
   const selectCoin = coin => {
-    arrSelectedCoins.push(coin);
+    $.get(
+      `https://min-api.cryptocompare.com/data/price?fsym=${coin.symbol}&tsyms=USD`,
+      res => {
+        if (res.Response == "Error") {
+          sendError(`No live information for ${coin.symbol}, deselecting.`);
+          $(`#${coin.id}`).find("input").prop("checked", false);
+        } else {
+          arrSelectedCoins.push(coin);
+        }
+      }
+    );
   };
 
   const unselectCoin = id => {
@@ -158,7 +171,6 @@ $(() => {
         if ($(this).prop("checked")) {
           //Handle switch replacement modal form
           if (arrSelectedCoins.length == 5) {
-            let tmpStr = "";
             $(".modalSwitch").show();
             $("body").addClass("noScroll");
             for (const coin of arrSelectedCoins) {
@@ -174,8 +186,11 @@ $(() => {
                 })
                 .on("click", function () {
                   selectionId = $(this).attr("id");
+                  $("#btnReplace").prop("disabled", false);
+                  $(`.toReplace`).empty();
+                  $(`#toReplace${coin.id}`).text("Will be deselected!");
                 });
-              $(".form-check-input.swc").first().prop("checked", true);
+
               selectionId = $(".form-check-input, .swc").first().attr("id");
               const label = $("<label></label>")
                 .attr({
@@ -183,7 +198,7 @@ $(() => {
                   for: coin.symbol,
                 })
                 .html(
-                  `<span class="bold">${coin.symbol}</span> - ${coin.name}`
+                  `<span class="bold">${coin.symbol}</span> - ${coin.name} <span class="toReplace" id="toReplace${coin.id}"></span>`
                 );
               divFormCheck.append(input, label);
               $(".selectedCoinsContainer").append(divFormCheck);
@@ -197,21 +212,20 @@ $(() => {
                 $(this).prop("checked", false);
               });
             //Replace button
-            const btnReplace = $(`<button type="button"></button>`)
+            const btnReplace = $(
+              `<button type="button" id="btnReplace"></button>`
+            )
               .addClass("btn btn-primary")
+              .prop("disabled", true)
               .text("Replace")
               .on("click", () => {
                 cleanModalSwitch();
-
                 $(`#${selectionId}`).find("input").prop("checked", false);
-                let oldSymbol;
-
                 for (const coin of arrCoins) {
                   if (coin.id == selectionId) {
                     unselectCoin(selectionId);
                   }
                 }
-
                 selectCoin({ id, name, symbol });
               });
 

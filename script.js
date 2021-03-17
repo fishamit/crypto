@@ -129,28 +129,47 @@ $(() => {
     $("body").removeClass("noScroll");
   };
 
-  /*Checks if live information about specific coin exists. if it does, it will be selected*/
+  /*
+  Checks if live information about specific coin exists. if it does, it will be selected
+  The usage of localStorage here is not related to the "more info" local storage which deletes after 2 minutes. 
+  It is done so that there won't be new API calls to cryptocompare on every click.
+  */
   const selectCoin = coin => {
-    $(`#${coin.id}`).find("input").hide();
-    $(`#${coin.id}`).find(".topRight").append(`
+    const local = localStorage.getItem(`isLiveInfo-${coin.id}`);
+    //If localStorage has no item, check if live info exists in API and store it in localStorage.
+    if (!local) {
+      $(`#${coin.id}`).find("input").hide();
+      $(`#${coin.id}`).find(".topRight").append(`
     <div id= "${coin.id}-spinner"class="spinner-border text-primary spinnerSwitch" style="width:1rem; height: 1rem;" role="status"></div>
     `);
-    $.get(
-      `https://min-api.cryptocompare.com/data/price?fsym=${coin.symbol}&tsyms=USD`,
-      res => {
-        if (res.Response == "Error") {
-          sendError(`No live information for ${coin.symbol}, deselecting.`);
-          $(`#${coin.id}-spinner`).remove();
-          $(`#${coin.id}`).find("input").prop("checked", false);
-          $(`#${coin.id}`).find("input").show();
-        } else {
-          $(`#${coin.id}-spinner`).remove();
-          arrSelectedCoins.push(coin);
-          $(`#${coin.id}`).find("input").prop("checked", true);
-          $(`#${coin.id}`).find("input").show();
+      $.get(
+        `https://min-api.cryptocompare.com/data/price?fsym=${coin.symbol}&tsyms=USD`,
+        res => {
+          if (res.Response == "Error") {
+            localStorage.setItem(`isLiveInfo-${coin.id}`, "false");
+            sendError(`No live information for ${coin.symbol}, deselecting.`);
+            $(`#${coin.id}-spinner`).remove();
+            $(`#${coin.id}`).find("input").prop("checked", false);
+            $(`#${coin.id}`).find("input").show();
+          } else {
+            localStorage.setItem(`isLiveInfo-${coin.id}`, "true");
+            $(`#${coin.id}-spinner`).remove();
+            arrSelectedCoins.push(coin);
+            $(`#${coin.id}`).find("input").prop("checked", true);
+            $(`#${coin.id}`).find("input").show();
+          }
         }
+      );
+      //If localStorage info exists, handle accordingly.
+    } else {
+      if (local == "true") {
+        arrSelectedCoins.push(coin);
+        $(`#${coin.id}`).find("input").prop("checked", true);
+      } else {
+        sendError(`No live information for ${coin.symbol}, deselecting.`);
+        $(`#${coin.id}`).find("input").prop("checked", false);
       }
-    );
+    }
   };
 
   const unselectCoin = id => {
@@ -350,7 +369,7 @@ $(() => {
         I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries. Two small notes:
         </p>
         <ol>
-        <li>Regarding the bonus question, some coins are not recognized by the API. If you select a coin (using the toggle switch) which has no live information, it will be deselected.</li>
+        <li>Regarding the bonus question, some coins are not recognized by the API. I added an additional mechanism for the selection toggle switches. When a coin is selected, an API call to cryptocompare.com will check whether there is live information on the specific coin. It will store a true/false value in the localStorage for future toggles.  </li>
         <li>The search function has no button - the coins are filtered whenever there is a change in the search input.</li>
         </ol>
         </div>

@@ -262,7 +262,15 @@ $(() => {
             `<div class="spinner-border" style="width:1rem; height: 1rem;" role="status"></div>`
           );
           $.get(`https://api.coingecko.com/api/v3/coins/${id}`, obj => {
-            localStorage.setItem(id, JSON.stringify({ name, symbol }));
+            localStorage.setItem(
+              id,
+              JSON.stringify({
+                img: obj.image.small,
+                usd: obj.market_data.current_price.usd,
+                eur: obj.market_data.current_price.eur,
+                ils: obj.market_data.current_price.ils,
+              })
+            );
 
             //Handle deletion from localStorage after 120 seconds
             const timeout = setTimeout(() => {
@@ -271,22 +279,24 @@ $(() => {
               $(this).text("More info");
             }, 120000);
 
+            //add more info
             $(this).text("Less info");
-            $(this).next().html(`
-              <div class="infoContainer">
-              <div class="center"> <img class="coinIcon" src="${obj.image.small}" alt="coin image"></img> </div>
-               <div class="center"><ul>
-               <li>USD: ${obj.market_data.current_price.usd}$</li>
-               <li>EUR: ${obj.market_data.current_price.eur}€</li>
-               <li>ILS: ${obj.market_data.current_price.ils}₪</li>
-               </ul></div>
-              </div>
-            `);
+            $(this)
+              .next()
+              .html(getMoreInfoString(JSON.parse(localStorage.getItem(id))));
             $(this).next().slideToggle();
           });
+          //handle more info if it exists in localstorage
         } else {
-          if ($(this).text() == "More info") $(this).text("Less info");
-          else $(this).text("More info");
+          if ($(this).text() == "More info") {
+            $(this).next().empty();
+            $(this)
+              .next()
+              .html(getMoreInfoString(JSON.parse(localStorage.getItem(id))));
+            $(this).text("Less info");
+          } else {
+            $(this).text("More info");
+          }
           $(this).next().slideToggle();
         }
       });
@@ -298,6 +308,19 @@ $(() => {
     divCard.append(divSwitch, divCardBody);
     divCardContainer.append(divCard);
     return divCardContainer;
+  };
+
+  const getMoreInfoString = obj => {
+    return `
+              <div class="infoContainer">
+              <div class="center"> <img class="coinIcon" src="${obj.img}" alt="coin image"></img> </div>
+              <div class="center"><ul>
+              <li>USD: ${obj.usd}$</li>
+              <li>EUR: ${obj.eur}€</li>
+              <li>ILS: ${obj.ils}₪</li>
+              </ul></div>
+              </div>
+    `;
   };
 
   /*

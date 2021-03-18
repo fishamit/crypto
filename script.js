@@ -147,7 +147,7 @@ $(() => {
         res => {
           if (res.Response == "Error") {
             localStorage.setItem(`isLiveInfo-${coin.id}`, "false");
-            sendError(`No live information for ${coin.symbol}, deselecting.`);
+            sendError(`No live information for ${coin.symbol}.`);
             $(`#${coin.id}-spinner`).remove();
             $(`#${coin.id}`).find("input").prop("checked", false);
             $(`#${coin.id}`).find("input").show();

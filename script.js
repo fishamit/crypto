@@ -129,10 +129,13 @@ $(() => {
     $("body").removeClass("noScroll");
   };
 
-  /*
+  /* 
   Checks if live information about specific coin exists. if it does, it will be selected
   The usage of localStorage here is not related to the "more info" local storage which deletes after 2 minutes. 
   It is done so that there won't be new API calls to cryptocompare on every click.
+  
+  If this function is called from the "replace" button (when >5 coins are selected),
+  a selectionId property will be passed within the coin object and used to deselect the chosen coin and replace with the new one.
   */
   const selectCoin = coin => {
     const local = localStorage.getItem(`isLiveInfo-${coin.id}`);

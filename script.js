@@ -157,6 +157,10 @@ $(() => {
             arrSelectedCoins.push(coin);
             $(`#${coin.id}`).find("input").prop("checked", true);
             $(`#${coin.id}`).find("input").show();
+            if (coin.selectionId) {
+              $(`#${coin.selectionId}`).find("input").prop("checked", false);
+              unselectCoin(coin.selectionId);
+            }
           }
         }
       );
@@ -165,6 +169,10 @@ $(() => {
       if (local == "true") {
         arrSelectedCoins.push(coin);
         $(`#${coin.id}`).find("input").prop("checked", true);
+        if (coin.selectionId) {
+          $(`#${coin.selectionId}`).find("input").prop("checked", false);
+          unselectCoin(coin.selectionId);
+        }
       } else {
         sendError(`No live information for ${coin.symbol}, deselecting.`);
         $(`#${coin.id}`).find("input").prop("checked", false);
@@ -248,13 +256,7 @@ $(() => {
               .text("Replace")
               .on("click", () => {
                 cleanModalSwitch();
-                $(`#${selectionId}`).find("input").prop("checked", false);
-                for (const coin of arrCoins) {
-                  if (coin.id == selectionId) {
-                    unselectCoin(selectionId);
-                  }
-                }
-                selectCoin({ id, name, symbol });
+                selectCoin({ id, name, symbol, selectionId });
               });
 
             $(".modal-footer.footerswitch").append(btnCancel, btnReplace);

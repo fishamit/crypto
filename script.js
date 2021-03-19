@@ -67,7 +67,7 @@ $(() => {
             }
           }
           if (firstPass) {
-            $(".myModal").hide();
+            $(".myModal").fadeOut(200);
             firstPass = false;
           }
           x += 2;
@@ -82,7 +82,6 @@ $(() => {
 
   //Load coins from api into coins array and call the coins function after.
   const loadCoins = () => {
-    $(".myModal").show();
     $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
       for (let i = 1; i < 50; i++) {
         //Starting at 1 because sometimes the first element has no img.
@@ -105,8 +104,7 @@ $(() => {
     $("#btnCoins").addClass("active");
     clearInterval(graphInterval);
     $("#txtSearch").show();
-    $(".myModal").hide();
-    drawCoins(arrCoins);
+    $(".myModal").fadeOut(500, drawCoins(arrCoins));
   };
 
   const clearScreen = () => {
@@ -125,7 +123,7 @@ $(() => {
   const cleanModalSwitch = () => {
     $(".selectedCoinsContainer").empty();
     $(".modal-footer.footerswitch").empty();
-    $(".modalSwitch").hide();
+    $(".modalSwitch").fadeOut(200);
     $("body").removeClass("noScroll");
   };
 
@@ -210,7 +208,7 @@ $(() => {
         if ($(this).prop("checked")) {
           //Handle switch replacement modal form
           if (arrSelectedCoins.length == 5) {
-            $(".modalSwitch").show();
+            $(".modalSwitch").fadeIn(200);
             $("body").addClass("noScroll");
             for (const coin of arrSelectedCoins) {
               const divFormCheck = $("<div></div>").addClass("form-check");
@@ -385,7 +383,7 @@ $(() => {
   const sendError = strError => {
     $("#modalErrorContent").text(strError);
     $("body").addClass("noScroll");
-    $(".modalError").show();
+    $(".modalError").fadeIn(200);
   };
 
   //Event listeners:
@@ -403,10 +401,16 @@ $(() => {
   });
 
   $("#btnCoins").on("click", () => {
-    coins();
+    if (currentState != "coins") {
+      $(".row")
+        .fadeOut(200, () => coins())
+        .fadeIn(200);
+    }
   });
   $("#btnAbout").on("click", () => {
-    about();
+    $(".row")
+      .fadeOut(200, () => about())
+      .fadeIn(200);
   });
 
   $("#btnReports").on("click", () => {
@@ -414,12 +418,14 @@ $(() => {
       sendError("Select at least one coin to show graph.");
       return;
     }
-    $(".myModal").show();
-    chart();
+    $(".myModal").fadeIn(200);
+    $(".row")
+      .fadeOut(200, () => chart())
+      .fadeIn(200);
   });
 
   $("#btnModalErrorClose").on("click", () => {
-    $(".modalError").hide();
+    $(".modalError").fadeOut(200);
     $("body").removeClass("noScroll");
     if (currentState != "coins") coins();
   });

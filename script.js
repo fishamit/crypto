@@ -16,7 +16,7 @@ $(() => {
     $("#btnReports").addClass("active");
 
     clearScreen();
-    $("#txtSearch").hide();
+    $("#txtSearch").fadeOut(200);
     $(".row").append(
       `<div class="center"><div id="chartContainer" style="width:90%; height:500px;"></div></div>`
     );
@@ -103,7 +103,7 @@ $(() => {
     $(".navBtn").removeClass("active");
     $("#btnCoins").addClass("active");
     clearInterval(graphInterval);
-    $("#txtSearch").show();
+    $("#txtSearch").fadeIn(200);
     $(".myModal").fadeOut(500, drawCoins(arrCoins));
   };
 
@@ -363,7 +363,7 @@ $(() => {
     $(".navBtn").removeClass("active");
     $("#btnAbout").addClass("active");
     clearScreen();
-    $("#txtSearch").hide();
+    $("#txtSearch").fadeOut(200);
     $(".row").append(`
         <div class="col-xl-6 center">
         <div class="jumbotron">
@@ -406,6 +406,7 @@ $(() => {
         .fadeOut(200, () => coins())
         .fadeIn(200);
     }
+    $("#txtSearch").val("");
   });
   $("#btnAbout").on("click", () => {
     $(".row")

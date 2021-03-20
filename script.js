@@ -35,7 +35,6 @@ $(() => {
         name: coin.symbol,
         dataPoints: [],
       });
-      //API string
       strSymbols += coin.symbol + ",";
     }
 
@@ -47,21 +46,55 @@ $(() => {
         title: "Time",
         valueFormatString: "HH:mm:ss TT",
         intervalType: "second",
-        interval: 3,
-        minimum: new Date(),
+        interval: 2,
       },
       axisY: {
         title: "Price ($USD)",
         minimum: 0,
-        prefix: "$",
+        suffix: "$",
       },
       toolTip: {
+        contentFormatter: function (e) {
+          const hours = e.entries[0].dataPoint.x.getHours();
+          const minutes = e.entries[0].dataPoint.x.getMinutes();
+          const seconds = e.entries[0].dataPoint.x.getSeconds();
+          const str = `
+
+              <table class="table table-striped table-bordered">
+        <tbody>
+        <tr>
+        <td class="align-middle">Coin name</td>
+        <td class="align-middle"><strong>${
+          e.entries[0].dataSeries.name
+        }</string></td>
+        </tr>
+        <tr>
+        <td class="align-middle">Time</td>
+        <td class="align-middle">${createTimeString(
+          hours,
+          minutes,
+          seconds
+        )}</td>
+        </tr>
+                <tr>
+        <td class="align-middle">Price</td>
+        <td class="align-middle"><strong>
+          ${e.entries[0].dataPoint.y}$
+        </string></td>
+        </tr>
+        <tr>
+        </tbody>
+      </table>
+          `;
+          return str;
+        },
         shared: false,
+        borderThickness: 3,
+        backgroundColor: "rgb(255,255,255)",
       },
       data: chartCoins,
     });
 
-    // chart.render();
     const update = () => {
       $.get(
         `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${strSymbols}&tsyms=USD`,
@@ -391,12 +424,8 @@ $(() => {
         <div class="jumbotron">
         <h1 class="display-4">About</h1>
         <p class="lead">My name is Amit and this is my second project for the John Bryce fullstack web developer course. I had a lot of fun building this web app!
-        I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries. Two small notes:
+        I learned a lot about some of the nastier sides of JavaScript, but also got to see some really cool ones, like the advantages of using arrow functions when you want to use the outer "this"! I enjoyed jQuery but prefer Vanilla JS, and I can't wait to learn modern libraries.
         </p>
-        <ol>
-        <li>Regarding the bonus question, some coins are not recognized by the API. I added an additional mechanism for the selection toggle switches. When a coin is selected, an API call to cryptocompare.com will check whether there is live information on the specific coin. It will store a true/false value in the localStorage for future toggles.  </li>
-        <li>The search function has no button - the coins are filtered whenever there is a change in the search input.</li>
-        </ol>
         </div>
         </div>
         <div class="col-xl-6 center"><img class="round shadow" src="img/sunny.png" alt="Sunny"></img></div>`);
@@ -406,6 +435,14 @@ $(() => {
     $("#modalErrorContent").text(strError);
     $("body").addClass("noScroll");
     $(".modalError").fadeIn(200);
+  };
+
+  const createTimeString = (...params) => {
+    let str = "";
+    for (const p of params) {
+      str += (p < 10 ? "0" : "") + p + ":";
+    }
+    return str.slice(0, -1);
   };
 
   //Event listeners:

@@ -6,6 +6,8 @@ $(() => {
   let arrSelectedCoins = [];
   let graphInterval;
   let currentState;
+  //Number of current async checks - to prevent selection of more than 5 coins (if API is slow)
+  let nAsync = 0;
 
   /*
   Bonus question - graph
@@ -16,6 +18,7 @@ $(() => {
     $("#btnReports").addClass("active");
 
     clearScreen();
+    $("body").removeClass("noScroll");
     $("#txtSearch").fadeOut(200);
     $(".row").append(
       `<div class="center"><div id="chartContainer" style="width:90%; height:500px;"></div></div>`
@@ -38,46 +41,54 @@ $(() => {
 
     strSymbols = strSymbols.slice(0, -1);
 
-    //x-axis(seconds)
-    let x = 0;
-
     const chart = new CanvasJS.Chart("chartContainer", {
+      theme: "light1",
       axisX: {
-        title: "Seconds",
-        minimum: 0,
-        interval: 1,
+        title: "Time",
+        valueFormatString: "HH:mm:ss TT",
+        intervalType: "second",
+        interval: 3,
+        minimum: new Date(),
       },
       axisY: {
         title: "Price ($USD)",
         minimum: 0,
+        prefix: "$",
+      },
+      toolTip: {
+        shared: false,
       },
       data: chartCoins,
     });
 
-    function addDataPoint() {
+    // chart.render();
+    const update = () => {
       $.get(
         `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${strSymbols}&tsyms=USD`,
         obj => {
+          const time = new Date();
           for (const coin of chartCoins) {
+            if (coin.dataPoints.length > 5) {
+              coin.dataPoints.shift();
+            }
             if (obj[coin.name.toUpperCase()]) {
               coin.dataPoints.push({
-                x: x,
+                x: time,
                 y: obj[coin.name.toUpperCase()].USD,
               });
             }
           }
+          chart.options.axisX.minimum = chartCoins[0].dataPoints[0].x;
+
           if (firstPass) {
             $(".myModal").fadeOut(200);
             firstPass = false;
           }
-          x += 2;
           chart.render();
-
-          graphInterval = setTimeout(addDataPoint, 2000);
         }
       );
-    }
-    addDataPoint();
+    };
+    graphInterval = setInterval(update, 2000);
   };
 
   //Load coins from api into coins array and call the coins function after.
@@ -139,10 +150,12 @@ $(() => {
     const local = localStorage.getItem(`isLiveInfo-${coin.id}`);
     //If localStorage has no item, check if live info exists in API and store it in localStorage.
     if (!local) {
+      nAsync += 1;
       $(`#${coin.id}`).find("input").hide();
       $(`#${coin.id}`).find(".topRight").append(`
     <div id= "${coin.id}-spinner"class="spinner-border text-primary spinnerSwitch" style="width:1rem; height: 1rem;" role="status"></div>
     `);
+
       $.get(
         `https://min-api.cryptocompare.com/data/price?fsym=${coin.symbol}&tsyms=USD`,
         res => {
@@ -163,6 +176,7 @@ $(() => {
               unselectCoin(coin.selectionId);
             }
           }
+          nAsync -= 1;
         }
       );
       //If localStorage info exists, handle accordingly.
@@ -206,8 +220,16 @@ $(() => {
       .on("click", function () {
         let selectionId;
         if ($(this).prop("checked")) {
+          //check a very specific situation where a user can select 6 coins if a coin is performing an async check.
+          if (nAsync + arrSelectedCoins.length >= 5 && nAsync != 0) {
+            sendError(
+              "Unable to select any more coins until pending coins are selected."
+            );
+            $(this).prop("checked", false);
+            return;
+          }
           //Handle switch replacement modal form
-          if (arrSelectedCoins.length == 5) {
+          else if (arrSelectedCoins.length == 5) {
             $(".modalSwitch").fadeIn(200);
             $("body").addClass("noScroll");
             for (const coin of arrSelectedCoins) {
@@ -419,6 +441,7 @@ $(() => {
       sendError("Select at least one coin to show graph.");
       return;
     }
+    $("body").addClass("noScroll");
     $(".myModal").fadeIn(200);
     $(".row")
       .fadeOut(200, () => chart())

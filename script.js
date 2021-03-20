@@ -78,9 +78,9 @@ $(() => {
         </tr>
                 <tr>
         <td class="align-middle">Price</td>
-        <td class="align-middle"><strong>
+        <td class="align-middle">
           ${e.entries[0].dataPoint.y}$
-        </string></td>
+        </td>
         </tr>
         <tr>
         </tbody>

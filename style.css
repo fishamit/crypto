@@ -45,7 +45,10 @@ p {
 table {
   margin: 0 !important;
 }
-
+td,
+th {
+  text-align: center;
+}
 #chartContainer {
   margin-top: 20px;
 }

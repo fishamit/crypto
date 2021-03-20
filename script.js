@@ -48,7 +48,7 @@ $(() => {
         interval: 1,
       },
       axisY: {
-        title: "$USD",
+        title: "Price ($USD)",
         minimum: 0,
       },
       data: chartCoins,

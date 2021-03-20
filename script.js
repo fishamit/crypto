@@ -63,13 +63,11 @@ $(() => {
               <table class="table table-striped table-bordered">
         <tbody>
         <tr>
-        <td class="align-middle">Coin name</td>
-        <td class="align-middle"><strong>${
-          e.entries[0].dataSeries.name
-        }</string></td>
+        <td class="align-middle"><strong>Coin name:</strong></td>
+        <td class="align-middle">${e.entries[0].dataSeries.name}</td>
         </tr>
         <tr>
-        <td class="align-middle">Time</td>
+        <td class="align-middle"><strong>Time:</strong></td>
         <td class="align-middle">${createTimeString(
           hours,
           minutes,
@@ -77,7 +75,7 @@ $(() => {
         )}</td>
         </tr>
                 <tr>
-        <td class="align-middle">Price</td>
+        <td class="align-middle"><strong>Price</strong></td>
         <td class="align-middle">
           ${e.entries[0].dataPoint.y}$
         </td>

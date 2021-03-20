@@ -44,7 +44,7 @@ $(() => {
       theme: "light1",
       axisX: {
         title: "Time",
-        valueFormatString: "HH:mm:ss TT",
+        valueFormatString: "HH:mm:ss",
         intervalType: "second",
         interval: 2,
       },
@@ -75,7 +75,7 @@ $(() => {
         )}</td>
         </tr>
                 <tr>
-        <td class="align-middle"><strong>Price</strong></td>
+        <td class="align-middle"><strong>Price:</strong></td>
         <td class="align-middle">
           ${e.entries[0].dataPoint.y}$
         </td>

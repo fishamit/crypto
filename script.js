@@ -59,30 +59,29 @@ $(() => {
           const minutes = e.entries[0].dataPoint.x.getMinutes();
           const seconds = e.entries[0].dataPoint.x.getSeconds();
           const str = `
-
-              <table class="table table-striped table-bordered">
-        <tbody>
-        <tr>
-        <td class="align-middle"><strong>Coin name:</strong></td>
-        <td class="align-middle">${e.entries[0].dataSeries.name}</td>
-        </tr>
-        <tr>
-        <td class="align-middle"><strong>Time:</strong></td>
-        <td class="align-middle">${createTimeString(
-          hours,
-          minutes,
-          seconds
-        )}</td>
-        </tr>
-                <tr>
-        <td class="align-middle"><strong>Price:</strong></td>
-        <td class="align-middle">
-          ${e.entries[0].dataPoint.y}$
-        </td>
-        </tr>
-        <tr>
-        </tbody>
-      </table>
+        <table class="table table-striped table-bordered">
+          <tbody>
+            <tr>
+              <td class="align-middle"><strong>Coin name:</strong></td>
+              <td class="align-middle">${e.entries[0].dataSeries.name}</td>
+            </tr>
+            <tr>
+              <td class="align-middle"><strong>Time:</strong></td>
+              <td class="align-middle">${createTimeString(
+                hours,
+                minutes,
+                seconds
+              )}</td>
+            </tr>
+            <tr>
+              <td class="align-middle"><strong>Price:</strong></td>
+              <td class="align-middle">
+                ${e.entries[0].dataPoint.y}$
+              </td>
+            </tr>
+            <tr>
+          </tbody>
+        </table>
           `;
           return str;
         },
@@ -110,7 +109,6 @@ $(() => {
             }
           }
           chart.options.axisX.minimum = chartCoins[0].dataPoints[0].x;
-
           if (firstPass) {
             $(".myModal").fadeOut(200);
             firstPass = false;
@@ -397,12 +395,12 @@ $(() => {
   const getMoreInfoString = obj => {
     return `
               <div class="infoContainer">
-              <div class="center"> <img class="coinIcon" src="${obj.img}" alt="coin image"></img> </div>
-              <div class="center"><ul>
-              <li>USD: ${obj.usd}$</li>
-              <li>EUR: ${obj.eur}€</li>
-              <li>ILS: ${obj.ils}₪</li>
-              </ul></div>
+                <div class="center"><img class="coinIcon" src="${obj.img}" alt="coin image"></img></div>
+                <div class="center"><ul>
+                <li>USD: ${obj.usd}$</li>
+                <li>EUR: ${obj.eur}€</li>
+                <li>ILS: ${obj.ils}₪</li>
+                </ul></div>
               </div>
     `;
   };

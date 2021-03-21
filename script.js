@@ -279,7 +279,6 @@ $(() => {
                   $(`#toReplace${coin.id}`).text("Will be deselected!");
                 });
 
-              selectionId = $(".form-check-input, .swc").first().attr("id");
               const label = $("<label></label>")
                 .attr({
                   class: "form-check-label",

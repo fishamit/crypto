@@ -121,6 +121,7 @@ $(() => {
   };
 
   //Load coins from api into coins array and call the coins function after.
+  //This function is only called once at page load.
   const loadCoins = () => {
     $.get("https://api.coingecko.com/api/v3/coins/list", obj => {
       for (let i = 1; i < 50; i++) {
@@ -249,7 +250,7 @@ $(() => {
       .on("click", function () {
         let selectionId;
         if ($(this).prop("checked")) {
-          //check a very specific situation where a user can select 6 coins if a coin is performing an async check.
+          //check a very specific situation where a user can select more than 5 coins if a coin is performing an async check.
           if (nAsync + arrSelectedCoins.length >= 5 && nAsync != 0) {
             sendError(
               "Unable to select any more coins until pending coins are selected."

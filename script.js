@@ -219,7 +219,7 @@ $(() => {
           unselectCoin(coin.selectionId);
         }
       } else {
-        sendError(`No live information for ${coin.symbol}, deselecting.`);
+        sendError(`No live information for ${coin.symbol}.`);
         $(`#${coin.id}`).find("input").prop("checked", false);
       }
     }

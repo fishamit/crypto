@@ -193,14 +193,12 @@ $(() => {
             localStorage.setItem(`isLiveInfo-${coin.id}`, "false");
             sendError(`No live information for ${coin.symbol}.`);
             $(`#${coin.id}-spinner`).remove();
-            $(`#${coin.id}`).find("input").prop("checked", false);
             $(`#${coin.id}`).find("input").show();
           } else {
             localStorage.setItem(`isLiveInfo-${coin.id}`, "true");
             $(`#${coin.id}-spinner`).remove();
             arrSelectedCoins.push(coin);
-            $(`#${coin.id}`).find("input").prop("checked", true);
-            $(`#${coin.id}`).find("input").show();
+            $(`#${coin.id}`).find("input").show().prop("checked", true);
             if (coin.selectionId) {
               $(`#${coin.selectionId}`).find("input").prop("checked", false);
               unselectCoin(coin.selectionId);
@@ -250,6 +248,8 @@ $(() => {
       .on("click", function () {
         let selectionId;
         if ($(this).prop("checked")) {
+          //uncheck visually and let selectCoin() handle the checking/unchecking.
+          $(this).prop("checked", false);
           //check a very specific situation where a user can select more than 5 coins if a coin is performing an async check.
           if (nAsync + arrSelectedCoins.length >= 5 && nAsync != 0) {
             sendError(
@@ -297,7 +297,6 @@ $(() => {
               .text("Cancel")
               .on("click", () => {
                 cleanModalSwitch();
-                $(this).prop("checked", false);
               });
             //Replace button
             const btnReplace = $(

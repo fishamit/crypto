@@ -448,7 +448,7 @@ $(() => {
       const arrSearch = arrCoins.filter(element => {
         return element.symbol
           .toLowerCase()
-          .startsWith($(this).val().toLowerCase());
+          .includes($(this).val().toLowerCase());
       });
       drawCoins(arrSearch);
     }
